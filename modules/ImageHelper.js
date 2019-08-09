@@ -1,7 +1,6 @@
 import ImageCache from './ImageCache';
 
-const reflect = p => p.then(v => ({v, status: 'fulfilled' }),
-                            e => ({e, status: 'rejected' }));
+const reflect = p => p.then(v => ({ v, status: 'fulfilled' }), e => ({ e, status: 'rejected' }));
 
 const ImageHelper = {
     loadImage(url, options) {
@@ -9,6 +8,7 @@ const ImageHelper = {
 
         return new Promise((resolve, reject) => {
             const handleSuccess = () => {
+                options.onUpdate();
                 resolve(image);
             };
             const handleError = () => {
@@ -49,22 +49,21 @@ const ImageHelper = {
     },
 
     loadImages(urls, options) {
-        const promises = urls.map(url =>  reflect(this.loadImage(url, options)));
-        return Promise.all(promises).then((promises) => {
-            return promises.map((p) => {
-                if(p.status !== 'fulfilled') {
+        const promises = urls.map(url => reflect(this.loadImage(url, options)));
+        return Promise.all(promises).then(promises => {
+            return promises.map(p => {
+                if (p.status !== 'fulfilled') {
                     throw new Exception('One or more images failed to load');
                 }
                 return p;
-            }
-        )
+            });
         });
     },
 
     // preload without caring about the result
     stuffImages(urls, options) {
         ImageCache.stuff(urls, options);
-    },
+    }
 };
 
 export default ImageHelper;

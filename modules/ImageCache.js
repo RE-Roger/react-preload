@@ -29,7 +29,7 @@ const ImageCache = {
     stuff,
     get,
     hash,
-    cache,
+    cache
 };
 
 export default ImageCache;
