@@ -12,6 +12,7 @@ const ImageHelper = {
                 resolve(image);
             };
             const handleError = () => {
+                options.onUpdate();
                 reject(new Error(`failed to preload ${url}`));
             };
 
